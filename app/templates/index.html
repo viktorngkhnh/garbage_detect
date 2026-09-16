@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klasyfikator Śmieci - AI Camera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .camera-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            position: relative;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 10px;
+            border: 3px solid #667eea;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-capture {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .prediction-main {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .predicted-class {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .confidence {
+            font-size: 1.3em;
+            color: #666;
+        }
+
+        .all-predictions {
+            margin-top: 20px;
+        }
+
+        .prediction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .prediction-item:last-child {
+            border-bottom: none;
+        }
+
+        .class-name {
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .probability {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .canvas-hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .camera-section, .results-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗂️ Klasyfikator Śmieci AI</h1>
+            <p>Pokaż odpady do kamery, a AI określi ich typ</p>
+        </div>
+
+        <div class="camera-section">
+            <div class="video-container">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" class="canvas-hidden"></canvas>
+            </div>
+              <div class="controls">
+                <button id="startBtn" class="btn">📷 Włącz Kamerę</button>
+                <button id="captureBtn" class="btn btn-capture" disabled>🔍 Klasyfikuj Odpady</button>
+                <button id="stopBtn" class="btn" disabled>❌ Wyłącz Kamerę</button>
+                
+                <div style="margin-top: 15px;">
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    <button id="uploadBtn" class="btn">📁 Wgraj Zdjęcie</button>
+                </div>
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                Analizuję obraz... 🤖
+            </div>
+            
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
+
+        <div id="results" class="results-section">
+            <h3>📊 Wyniki Klasyfikacji</h3>
+            <div class="prediction-main">
+                <div id="predictedClass" class="predicted-class"></div>
+                <div id="confidence" class="confidence"></div>
+            </div>
+            
+            <div class="all-predictions">
+                <h4>Wszystkie prawdopodobieństwa:</h4>
+                <div id="allPredictions"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Zmienne globalne
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let stream = null;        // Przyciski
+        const startBtn = document.getElementById('startBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInput = document.getElementById('fileInput');
+
+        // Sekcje
+        const loadingDiv = document.getElementById('loading');
+        const errorDiv = document.getElementById('error');
+        const resultsDiv = document.getElementById('results');
+
+        // Mapowanie nazw klas na polskie odpowiedniki
+        const classTranslations = {
+            'cardboard': 'Karton 📦',
+            'glass': 'Szkło 🥃',
+            'metal': 'Metal ⚙️',
+            'paper': 'Papier 📄',
+            'plastic': 'Plastik 🧴',
+            'trash': 'Inne odpady 🗑️'
+        };
+
+        // Uruchomienie kamery
+        startBtn.addEventListener('click', async () => {
+            try {
+                // Sprawdź dostępność getUserMedia
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Twoja przeglądarka nie obsługuje dostępu do kamery');
+                }
+
+                // Poproś o dostęp do kamery
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: 'environment', // Użyj tylnej kamery na telefonach
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
+
+                video.srcObject = stream;
+                
+                // Aktualizuj przyciski
+                startBtn.disabled = true;
+                captureBtn.disabled = false;
+                stopBtn.disabled = false;
+                
+                hideError();
+                
+            } catch (err) {
+                console.error('Błąd dostępu do kamery:', err);
+                showError('Nie można uzyskać dostępu do kamery. Sprawdź uprawnienia.');
+            }
+        });
+
+        // Wyłączenie kamery
+        stopBtn.addEventListener('click', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            video.srcObject = null;
+            
+            // Aktualizuj przyciski
+            startBtn.disabled = false;
+            captureBtn.disabled = true;
+            stopBtn.disabled = true;
+            
+            resultsDiv.style.display = 'none';
+        });        // Przechwycenie i klasyfikacja obrazu
+        captureBtn.addEventListener('click', async () => {
+            if (!stream) {
+                showError('Kamera nie jest włączona');
+                return;
+            }
+
+            try {
+                // Przygotuj canvas
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                // Narysuj aktualną klatkę z video na canvas
+                ctx.drawImage(video, 0, 0);
+                
+                // Konwertuj canvas na base64
+                const imageData = canvas.toDataURL('image/jpeg', 0.8);
+                
+                // Wyślij do serwera
+                await classifyImage(imageData);
+                
+            } catch (err) {
+                console.error('Błąd podczas przechwytywania obrazu:', err);
+                showError('Błąd podczas przechwytywania obrazu');
+            }
+        });
+
+        // Upload pliku
+        uploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                // Sprawdź czy to obraz
+                if (!file.type.startsWith('image/')) {
+                    showError('Wybierz plik obrazu');
+                    return;
+                }
+
+                // Konwertuj plik na base64
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const imageData = e.target.result;
+                    await classifyImage(imageData);
+                };
+                reader.readAsDataURL(file);
+
+            } catch (err) {
+                console.error('Błąd podczas wczytywania pliku:', err);
+                showError('Błąd podczas wczytywania pliku');
+            }
+        });
+
+        // Funkcja do klasyfikacji obrazu
+        async function classifyImage(imageData) {
+            showLoading();
+            hideError();
+            resultsDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ image: imageData })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                // Wyświetl wyniki
+                displayResults(result);
+
+            } catch (err) {
+                console.error('Błąd klasyfikacji:', err);
+                showError('Błąd podczas klasyfikacji: ' + err.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Wyświetlenie wyników
+        function displayResults(result) {
+            // Główny wynik
+            const translatedClass = classTranslations[result.predicted_class] || result.predicted_class;
+            document.getElementById('predictedClass').textContent = translatedClass;
+            document.getElementById('confidence').textContent = `Pewność: ${result.confidence}%`;
+
+            // Wszystkie prawdopodobieństwa
+            const allPredictionsDiv = document.getElementById('allPredictions');
+            allPredictionsDiv.innerHTML = '';
+
+            for (const [className, probability] of Object.entries(result.all_predictions)) {
+                const translatedName = classTranslations[className] || className;
+                const item = document.createElement('div');
+                item.className = 'prediction-item';
+                item.innerHTML = `
+                    <span class="class-name">${translatedName}</span>
+                    <span class="probability">${probability}%</span>
+                `;
+                allPredictionsDiv.appendChild(item);
+            }
+
+            resultsDiv.style.display = 'block';
+        }
+
+        // Funkcje pomocnicze dla UI
+        function showLoading() {
+            loadingDiv.style.display = 'block';
+        }
+
+        function hideLoading() {
+            loadingDiv.style.display = 'none';
+        }
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            errorDiv.style.display = 'none';
+        }
+
+        // Automatyczne uruchomienie kamery na urządzeniach mobilnych
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            console.log('Wykryto urządzenie mobilne');
+        }
+    </script>
+</body>
+</html>

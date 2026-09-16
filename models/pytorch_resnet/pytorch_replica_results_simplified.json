@@ -1,0 +1,68 @@
+{
+  "approach": "PyTorch transfer learning (frozen backbone, Split 60/10/30)",
+  "model": "ResNet50",
+  "epochs": 8,
+  "learning_rate": 0.001,
+  "batch_size": 32,
+  "optimizer": "Adam",
+  "best_val_acc": 0.7333333333333333,
+  "class_names": [
+    "cardboard",
+    "glass",
+    "metal",
+    "paper",
+    "plastic",
+    "trash"
+  ],
+  "input_size": 224,
+  "final_val_acc": 0.7333333333333333,
+  "final_val_loss": 1.0090034008026123,
+  "final_train_loss": 0.8183186054229736,
+  "history": [
+    {
+      "val_loss": 1.6435075998306274,
+      "val_acc": 0.4,
+      "train_loss": 1.8463021516799927
+    },
+    {
+      "val_loss": 1.4258291721343994,
+      "val_acc": 0.43333333333333335,
+      "train_loss": 1.6496367454528809
+    },
+    {
+      "val_loss": 1.3796765804290771,
+      "val_acc": 0.5333333333333333,
+      "train_loss": 1.4230999946594238
+    },
+    {
+      "val_loss": 1.2600634098052979,
+      "val_acc": 0.5666666666666667,
+      "train_loss": 1.2077962160110474
+    },
+    {
+      "val_loss": 1.1548694372177124,
+      "val_acc": 0.5333333333333333,
+      "train_loss": 1.181334137916565
+    },
+    {
+      "val_loss": 1.155380368232727,
+      "val_acc": 0.6666666666666666,
+      "train_loss": 0.9689546227455139
+    },
+    {
+      "val_loss": 1.1238151788711548,
+      "val_acc": 0.6,
+      "train_loss": 0.9155996441841125
+    },
+    {
+      "val_loss": 1.0090034008026123,
+      "val_acc": 0.7333333333333333,
+      "train_loss": 0.8183186054229736
+    }
+  ],
+  "data_split": {
+    "train": 180,
+    "val": 30,
+    "test": 90
+  }
+}

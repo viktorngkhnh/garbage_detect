@@ -1,0 +1,61 @@
+{
+  "approach": "PyTorch MobileNetV2 (CUDA-Only, Split 60/10/30)",
+  "model": "MobileNetV2",
+  "epochs": 8,
+  "learning_rate": 0.0002,
+  "batch_size": 32,
+  "optimizer": "Adam",
+  "input_size": "224x224",
+  "architecture_features": "Depthwise separable convolutions, Inverted residuals",
+  "target_platform": "Mobile-optimized",
+  "final_val_acc": 0.8854166865348816,
+  "final_val_loss": 0.41192322969436646,
+  "final_train_loss": 0.035226624459028244,
+  "history": [
+    {
+      "val_loss": 0.43209147453308105,
+      "val_acc": 0.8570312261581421,
+      "train_loss": 0.75234055519104
+    },
+    {
+      "val_loss": 0.34731394052505493,
+      "val_acc": 0.8692708015441895,
+      "train_loss": 0.21556252241134644
+    },
+    {
+      "val_loss": 0.35609352588653564,
+      "val_acc": 0.8807291984558105,
+      "train_loss": 0.09034585952758789
+    },
+    {
+      "val_loss": 0.28829070925712585,
+      "val_acc": 0.9197916984558105,
+      "train_loss": 0.06527920067310333
+    },
+    {
+      "val_loss": 0.3146401643753052,
+      "val_acc": 0.8924479484558105,
+      "train_loss": 0.05352406203746796
+    },
+    {
+      "val_loss": 0.27852487564086914,
+      "val_acc": 0.9125000238418579,
+      "train_loss": 0.0752963274717331
+    },
+    {
+      "val_loss": 0.37005415558815,
+      "val_acc": 0.8932291865348816,
+      "train_loss": 0.06194433942437172
+    },
+    {
+      "val_loss": 0.41192322969436646,
+      "val_acc": 0.8854166865348816,
+      "train_loss": 0.035226624459028244
+    }
+  ],
+  "data_split": {
+    "train": 1516,
+    "val": 252,
+    "test": 759
+  }
+}
