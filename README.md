@@ -174,38 +174,18 @@ ResNet50 with 95.21% accuracy is ready for deployment in:
 - **IoT systems** in smart bins
 - **Automated sorting machines**
 
-## 10. Web Application
-To practically demonstrate the trained model’s capabilities, a simple web application was built. It allows users to interactively classify waste.
+## 10. App Integration Handoff
 
-### 10.1 Application Architecture
-The app follows a client-server architecture:
-- **Backend**: Python server using lightweight Flask framework
-- **Frontend**: User interface built with HTML, CSS, and JavaScript
+The app implementation is maintained separately. The following model interface and paths are the integration contract:
 
-### 10.2 Backend (Flask)
-The core of the app is a Flask server responsible for handling requests and performing predictions.
-1. **Model Loading**
-- On startup, the ResNet50 model is defined.
-- Instead of retraining, pretrained=False is used and weights of the final trained model are loaded from a `.pth` file. The model is switched to evaluation mode (`model.eval()`), ensuring consistent predictions.
-2. **Image Preprocessing**
-- The server defines a `/predict` endpoint listening for POST requests.
-- After receiving an image, it is resized to the appropriate resolution and converted.
-3. **Prediction**
-- The preprocessed tensor is fed into the ResNet50 model.
-- The model outputs a probability vector for each of the 6 waste classes.
-- The backend maps predictions to class names with probabilities and returns a JSON response to the frontend.
+- **Model definition**: `pytorch_resnet.py` (`ResNet` class)
+- **Checkpoint**: `models/pytorch_resnet/waste_classifier_resnet50.pth`
+- **Architecture**: ResNet50
+- **Checkpoint fields**: `state_dict`, `class_names`, `input_size`, `normalization_mean`, and `normalization_std`
+- **Input**: RGB image resized to `input_size` (currently 224x224), converted to a tensor, then normalized with the checkpoint's mean and standard deviation
+- **Output**: Six logits in the order given by `class_names`; apply softmax to obtain probabilities
 
-### 10.3 Frontend (JavaScript)
-The user interface provides two ways to submit an image for classification:
-
-1. **File Upload**: User selects a graphic file (JPG, PNG) from their device.
-2. **Camera Capture**: The app requests camera access to take a real-time picture of waste.
-
-In both cases, the JavaScript code:
-- Captures the image (from file or video frame)
-- Formats the data appropriately
-- Sends the image via an asynchronous POST request to the Flask `/predict` endpoint
-- Receives the JSON response and displays the predicted waste category to the user
+Resolve the checkpoint path relative to the project root rather than the app's working directory. Load the checkpoint with `map_location=device`, construct `ResNet(num_classes=len(checkpoint["class_names"]), pretrained=False, freeze_backbone=False)`, load `checkpoint["state_dict"]`, and call `model.eval()` before inference.
 
 ## 11. Desktop Camera Application
 

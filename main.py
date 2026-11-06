@@ -131,15 +131,6 @@ class WasteClassifierApp:
         )
         self.result_label.pack(fill="x", pady=(0, 8))
 
-        self.probability_label = ttk.Label(
-            container,
-            text="",
-            anchor="center",
-            justify="center",
-            font=("Segoe UI", 11),
-        )
-        self.probability_label.pack(fill="x")
-
         device_label = ttk.Label(container, text=f"Inference device: {self.device}")
         device_label.pack(pady=(10, 0))
 
@@ -172,21 +163,10 @@ class WasteClassifierApp:
 
         with torch.inference_mode():
             logits = self.model(image_tensor)
-            probabilities = torch.softmax(logits[0], dim=0).cpu()
 
-        predicted_index = int(torch.argmax(probabilities).item())
+        predicted_index = int(torch.argmax(logits[0]).item())
         predicted_class = self.class_names[predicted_index]
-        confidence = probabilities[predicted_index].item() * 100
-        self.result_label.configure(
-            text=f"Prediction: {predicted_class} ({confidence:.1f}%)"
-        )
-
-        ranked_indices = torch.argsort(probabilities, descending=True)
-        details = [
-            f"{self.class_names[index]}: {probabilities[index].item() * 100:.1f}%"
-            for index in ranked_indices.tolist()
-        ]
-        self.probability_label.configure(text="   |   ".join(details))
+        self.result_label.configure(text=f"Prediction: {predicted_class}")
         self.capture_button.configure(state="normal")
 
     def close(self):
