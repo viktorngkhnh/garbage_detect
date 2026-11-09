@@ -5,64 +5,66 @@
   "learning_rate": 0.001,
   "batch_size": 32,
   "optimizer": "Adam",
-  "best_val_acc": 0.83,
+  "best_val_acc": 0.7857142857142857,
   "class_names": [
-    "cardboard",
-    "glass",
-    "metal",
-    "paper",
-    "plastic",
-    "trash"
+    "Glass",
+    "Iron_Aluminum_Cans",
+    "Other_Recyclables",
+    "PET_Bottles",
+    "Paper_Containers",
+    "Plastics",
+    "Waste_Batteries",
+    "Waste_Paper"
   ],
   "input_size": 224,
-  "final_val_acc": 0.83,
-  "final_val_loss": 0.5083525933821996,
-  "final_train_loss": 0.5236414074897766,
+  "final_val_acc": 0.7602040816326531,
+  "final_val_loss": 0.6309199394011984,
+  "final_train_loss": 0.5409982800483704,
   "history": [
     {
-      "val_loss": 0.9294957216580709,
-      "val_acc": 0.6533333333333333,
-      "train_loss": 1.2994588613510132
+      "val_loss": 1.0624208620616369,
+      "val_acc": 0.6938775510204082,
+      "train_loss": 1.5092147588729858
     },
     {
-      "val_loss": 0.7296861378351848,
-      "val_acc": 0.7733333333333333,
-      "train_loss": 0.8114868402481079
+      "val_loss": 0.845504354457466,
+      "val_acc": 0.7193877551020408,
+      "train_loss": 0.9794598817825317
     },
     {
-      "val_loss": 0.6608396136760711,
-      "val_acc": 0.7733333333333333,
-      "train_loss": 0.6866315007209778
+      "val_loss": 0.7845672466317002,
+      "val_acc": 0.7295918367346939,
+      "train_loss": 0.8116459846496582
     },
     {
-      "val_loss": 0.5826410047213236,
-      "val_acc": 0.8033333333333333,
-      "train_loss": 0.6376164555549622
+      "val_loss": 0.7882804116424249,
+      "val_acc": 0.7142857142857143,
+      "train_loss": 0.7218872904777527
     },
     {
-      "val_loss": 0.5589504337310791,
-      "val_acc": 0.8166666666666667,
-      "train_loss": 0.6233193278312683
+      "val_loss": 0.7619455371584211,
+      "val_acc": 0.7193877551020408,
+      "train_loss": 0.6709141731262207
     },
     {
-      "val_loss": 0.5880261727174123,
-      "val_acc": 0.7933333333333333,
-      "train_loss": 0.5636763572692871
+      "val_loss": 0.735105389234971,
+      "val_acc": 0.7040816326530612,
+      "train_loss": 0.6038057208061218
     },
     {
-      "val_loss": 0.5242477297782898,
-      "val_acc": 0.8166666666666667,
-      "train_loss": 0.5596343278884888
+      "val_loss": 0.6467274244950743,
+      "val_acc": 0.7857142857142857,
+      "train_loss": 0.5902613997459412
     },
     {
-      "val_loss": 0.5083525933821996,
-      "val_acc": 0.83,
-      "train_loss": 0.5236414074897766
+      "val_loss": 0.6309199394011984,
+      "val_acc": 0.7602040816326531,
+      "train_loss": 0.5409982800483704
     }
   ],
   "data_split": {
-    "train": 1800,
-    "val": 300,
-    "test": 900
+    "train": 1188,
+    "val": 196,
+    "test": 599
   }
 }

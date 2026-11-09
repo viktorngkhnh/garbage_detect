@@ -23,10 +23,12 @@ Transfer learning is a technique that uses models pre-trained on large datasets 
 ## 3. Research Methodology
 
 ### 3.1 Dataset
-- **Source**: Garbage_classification dataset containing images of waste in 6 categories (https://www.kaggle.com/datasets/sumn2u/garbage-classification-v2), (https://www.kaggle.com/datasets/asdasdasasdas/garbage-classification/data)
-- **Categories**: cardboard, glass, metal, paper, plastic, trash (mixed waste)
-- **Dataset size**: ~13,000 samples
+- **Directory**: `data/garbage_classification/<class_name>/`
+- **Categories**: `01_Waste_Paper`, `02_Paper_Containers`, `03_Plastics`, `04_Iron_Aluminum_Cans`, `05_Glass`, `06_PET_Bottles`, `07_Waste_Batteries`, `08_Other_Recyclables`
+- **Current dataset size**: 1,983 images; see `data/SOURCE.md` for the current per-class counts and source status
 - **Data split**: 60% training, 10% validation, 30% testing
+
+`pytorch_resnet.py` reads class names from these directory names and saves them in the model checkpoint. After changing or replacing class folders, retrain the model before running `main.py`; the app displays the class names stored in the checkpoint.
 
 ### 3.2 Data Split (60/10/30)
 
@@ -206,6 +208,8 @@ The training script saves the best model and its class metadata to:
 ```text
 models/pytorch_resnet/waste_classifier_resnet50.pth
 ```
+
+The checkpoint's `class_names` are generated from the dataset folder names. Retrain after changing the class folders so predictions use the updated labels.
 
 ### 11.2 Run Camera Classification
 

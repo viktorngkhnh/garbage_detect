@@ -1,7 +1,25 @@
 # Dataset Sources
 
-The training dataset contains exactly 500 valid images for each class:
-`cardboard`, `glass`, `metal`, `paper`, `plastic`, and `trash` (3,000 images total).
+## Current Dataset
+
+The current training folders contain 1,983 images across these classes:
+
+| Class folder | Images |
+| --- | ---: |
+| `01_Waste_Paper` | 200 |
+| `02_Paper_Containers` | 200 |
+| `03_Plastics` | 400 |
+| `04_Iron_Aluminum_Cans` | 200 |
+| `05_Glass` | 571 |
+| `06_PET_Bottles` | 149 |
+| `07_Waste_Batteries` | 169 |
+| `08_Other_Recyclables` | 94 |
+
+The provenance and license of the current images have not yet been recorded. Add the source and license for each new class before redistributing this dataset. `ImageFolder` uses these directory names as class labels, and `pytorch_resnet.py` stores them in the trained checkpoint.
+
+## Previous Dataset History
+
+The following source notes describe the previous six-class dataset, not the current image folders. That dataset contained 500 images per class (3,000 images total): `cardboard`, `glass`, `metal`, `paper`, `plastic`, and `trash`.
 
 ## Original Selection
 
